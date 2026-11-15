@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#132e3c"><title>MethylationSal · Axolotl tail regeneration</title>
+  <link rel="stylesheet" href="style.css"><script src="methylome.js" defer></script><script src="app.js" defer></script>
+</head>
+<body>
+<header><div class="wrap topline">
+  <a class="brand" href="./">Methylation<span>Sal</span></a>
+  <nav aria-label="Sources"><a href="https://uknowledge.uky.edu/biology_etds/81/">Dissertation ↗</a><a href="https://github.com/varunorama/MethylationSal">GitHub ↗</a></nav>
+</div></header>
+<main class="wrap">
+  <section class="hero"><div><h1>Axolotl tail regeneration</h1>
+    <p>Compare CpG methylation across the first 24 hours after amputation and follow gene expression through 48 hours in <i>Ambystoma mexicanum</i> embryo tails.</p></div>
+    <table class="timeline"><caption>Sampling times after amputation</caption>
+      <thead><tr><th scope="col">Assay</th><th>0 h</th><th>6 h</th><th>12 h</th><th>24 h</th><th>48 h</th></tr></thead>
+      <tbody><tr><th scope="row">WGBS</th><td>●</td><td>●</td><td>●</td><td>●</td><td aria-label="No sample">—</td></tr>
+      <tr><th scope="row">RNA-seq</th><td>●</td><td>●</td><td>●</td><td>●</td><td>●</td></tr></tbody>
+    </table>
+  </section>
+  <nav class="views" aria-label="Explorer sections">
+    <button id="tab-methylome" aria-pressed="true">CpG methylome</button><button id="tab-wgbs" aria-pressed="false">WGBS associations</button><button id="tab-rna" aria-pressed="false">RNA expression</button><button id="tab-study" aria-pressed="false">Study &amp; downloads</button>
+  </nav>
+  <section id="methylome">
+    <div class="locusgrid">
+      <section class="locus-panel">
+        <h2>Methylation by genomic position</h2>
+        <form id="locus-form" class="filters"><label class="grow" for="locus">AmexG.v6 interval<input id="locus" value="chr1p:7601-8000" required maxlength="100" spellcheck="false" aria-describedby="locus-hint"></label>
+          <button class="searchbtn" type="submit">Query region</button></form>
+        <p class="note" id="locus-hint">Enter 1-based, inclusive coordinates spanning up to 50,000 bases.</p>
+        <p id="locus-status" role="status" aria-live="polite">Loading the example interval…</p>
+        <div id="locus-results" hidden>
+          <div class="sectionbar"><strong>CpG methylation (%)</strong><button id="locus-export" class="textbtn">Export region TSV</button></div>
+          <div class="interval-scroll" tabindex="0" aria-label="Scrollable methylation table"><table class="readout locus-values"><thead><tr><th scope="col">AmexG.v6 position</th><th scope="col">0 h</th><th scope="col">6 h</th><th scope="col">12 h</th><th scope="col">24 h</th></tr></thead><tbody id="locus-rows"></tbody></table></div>
+          <p class="note">A dash means the track has no value at this interval. Zero is a measured value. The export preserves the percentages returned by UCSC.</p>
+        </div>
+        <p><a id="locus-source" hidden>View this interval in the UCSC data API ↗</a></p>
+      </section>
+      <aside class="downloads"><h2>Whole-genome tracks</h2>
+        <p>Download the original CpG percentage tracks from the University of Kentucky.</p>
+        <ul id="bigwigs"></ul>
+        <p><strong>Track credit</strong><br>The Kentucky hub introduces these four tracks with “Unpublished tracks Methylation from Varun”. Varun B. Dwaraka is the first author of Chapter 5, with Jeramiah J. Smith and S. Randal Voss.</p>
+        <p><a href="https://genome.ucsc.edu/cgi-bin/hgGateway?genome=AmexG.v6&amp;hubUrl=http://ambystoma.uky.edu/hubExamples/hubAssembly/hub_AmexG_v6/hub.txt">Open Kentucky’s AmexG.v6 genome browser ↗</a></p>
+        <p class="note">In the browser, enable the WGBS tracks in the methylation group. Kentucky lists these tracks as unpublished and describes its data-use expectations on Sal-Site.</p>
+        <p><a href="https://ambystoma.as.uky.edu/genome-resources">Sal-Site genome resources</a> · <a href="https://ambystoma.uky.edu/hubExamples/hubAssembly/hub_AmexG_v6/AmexG_v6.hub_data/trackDb.txt">Original track definitions</a> · <a href="https://uknowledge.uky.edu/biology_etds/81/">Dissertation</a></p>
+      </aside>
+    </div>
+    <noscript>Enable JavaScript to query a region. The Kentucky track definitions link to the four original bigWigs.</noscript>
+  </section>
+  <section id="explorer" hidden>
+    <form id="search" class="filters">
+      <label class="grow">Gene or AxPQ.v6 model ID<input id="q" type="search" maxlength="180" placeholder="Search gene labels or model IDs" autocomplete="off" spellcheck="false"></label>
+      <label class="wgbs">DMR time<select id="time"><option value="">All times</option><option value="6">6 h vs 0 h</option><option value="12">12 h vs 0 h</option><option value="24">24 h vs 0 h</option></select></label>
+      <label class="wgbs">Methylation<select id="direction"><option value="">Both directions</option><option value="hyper">Hypermethylated</option><option value="hypo">Hypomethylated</option></select></label>
+      <label class="wgbs">Relationship<select id="relation"><option value="">Direct and inverse</option><option value="inverse">Inverse</option><option value="direct">Direct</option></select></label>
+      <label class="rna" hidden>Contrast set<select id="family"><option value="baseline">Against baseline</option><option value="adjacent">Adjacent intervals</option></select></label>
+      <label class="rna" hidden>End time<select id="hour"><option>6</option><option>12</option><option>24</option><option>48</option></select></label>
+      <label class="rna" hidden>Show<select id="significance"><option value="">All reported rows</option><option value="sig">FDR &lt; 0.05</option></select></label>
+      <button class="searchbtn" type="submit">Search</button>
+    </form>
+    <div class="examples">Try <button data-gene="SHANK2">SHANK2</button><button data-gene="FGF9">FGF9</button><button data-gene="PYCARD">PYCARD</button><button id="clear">Clear filters</button></div>
+    <p id="load" role="status">Loading chapter tables…</p>
+    <noscript>Enable JavaScript to search. <a href="https://github.com/varunorama/MethylationSal">Download the data from GitHub</a>.</noscript>
+    <div id="workspace" hidden>
+      <section class="matches"><div class="sectionbar"><h2 id="count" aria-live="polite"></h2><button id="download" class="textbtn">Export TSV</button></div>
+        <div id="rows"></div>
+        <div class="pager" id="pager"><button id="prev">Previous</button><span id="page"></span><button id="next">Next</button></div>
+      </section>
+      <section id="detail" class="detail" aria-label="Selected result"></section>
+    </div>
+  </section>
+  <section id="study" hidden>
+    <h2>What the chapter contains</h2>
+    <div class="studygrid">
+      <article><h3>Whole-genome bisulfite sequencing</h3><p>Chapter 5 reports mean CpG methylation of 84.33–84.69% across sampled time points. Relative to 0 h, it reports 8,037 differentially methylated regions (DMRs) at 6 h, 8,206 at 12 h and 9,743 at 24 h.</p>
+      <p>Tables 5.2–5.3 identify genes associated with a subset of these regions. The Kentucky hub provides the per-position CpG percentages for all four times. The chapter gene lists omit DMR coordinates, and the percentage tracks do not include read depths.</p></article>
+      <article><h3>RNA sequencing</h3><p>Supplementary File 5.1 contains reported expression contrasts through 48 h. Chapter 5 describes alignment to AxPQ.v6, exon counting with featureCounts and differential expression analysis with DESeq2. A library preparation error excluded the second 6 h replicate.</p>
+      <p>Both worksheets contain selected features. An absent feature or unavailable FDR cannot establish that expression stayed constant.</p></article>
+      <article><h3>Reduced representation bisulfite sequencing</h3><p>Section 5.4.2 records RRBS sequencing at the UC Davis Genome Center. A separate sample manifest, accession and RRBS methylation measurements could not be verified for this time course.</p></article>
+    </div>
+    <h2>Source figures</h2><p>Open an original Chapter 5 figure at its deposited resolution.</p>
+    <div class="figgrid" id="figures"></div>
+    <h2>Download the tables</h2><ul>
+      <li><a href="data/methylation-associations.tsv" download>WGBS-associated gene labels · Tables 5.2 and 5.3</a></li>
+      <li><a href="data/methylation-enzymes.tsv" download>DNA methylation enzyme expression · Table 5.1</a></li>
+      <li><a href="data/rna-baseline.tsv" download>RNA-seq · contrasts against 0 h</a></li>
+      <li><a href="data/rna-adjacent.tsv" download>RNA-seq · adjacent intervals</a></li>
+      <li><a href="https://github.com/varunorama/MethylationSal/raw/refs/heads/main/source/SupplementaryFile5.1.xlsx">Original expression workbook (.xlsx)</a></li>
+      <li>Kentucky’s Dwaraka embryo-tail RNA track, reported in TPM across 14 samples · <a href="https://ambystoma.uky.edu/hubExamples/hubAssembly/hub_AmexG_v6/AmexG_v6.hub_data/RNA_Seq_Rates/dwaraka_tail/tailMatrix_rl">Expression matrix</a> · <a href="https://ambystoma.uky.edu/hubExamples/hubAssembly/hub_AmexG_v6/AmexG_v6.hub_data/RNA_Seq_Rates/dwaraka_tail/tailSamples_rl">Sample-to-time key</a></li>
+    </ul><p><a href="https://github.com/varunorama/MethylationSal#data-and-provenance">Data dictionary, identifier matching and citation ↗</a></p>
+  </section>
+  <footer><span>MethylationSal</span><p>Chapter 5 · Dwaraka, Smith &amp; Voss · University of Kentucky · 2021 · <a href="https://doi.org/10.13023/etd.2021.411">Dissertation</a></p></footer>
+</main></body></html>

@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "Cite Chapter 5 and Supplementary File 5.1 of the dissertation when using these results."
+type: dataset
+title: "MethylationSal: Axolotl embryo tail regeneration"
+authors:
+  - family-names: Dwaraka
+    given-names: Varun B.
+    orcid: "https://orcid.org/0000-0001-9033-3092"
+repository-code: "https://github.com/varunorama/MethylationSal"
+url: "https://varunorama.github.io/MethylationSal/"
+preferred-citation:
+  type: thesis
+  title: "Comparative Transcriptomic Analysis and Epigenetic Profiling of Salamander Tissue Regeneration"
+  authors:
+    - family-names: Dwaraka
+      given-names: Varun B.
+  institution:
+    name: University of Kentucky
+  year: 2021
+  thesis-type: PhD
+  doi: "10.13023/etd.2021.411"
